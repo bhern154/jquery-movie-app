@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>JQuery Exercises</title>
+  <link rel="stylesheet"
+        href="https://unpkg.com/bootstrap/dist/css/bootstrap.css">
+</head>
+
+<body>
+
+<div id="container"></div>
+<div id="sort"></div>
+<ul id="movies"></ul>
+
+<script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+
+<script>
+// Build an application that uses jQuery to do the following:
+
+// Contains a form with two inputs for a title and rating along with a button to submit the form.
+  $("#container").append('<form action id="form"></form>');
+  $("#form").append('<label for="title">Title:</label>');
+  $("#form").append('<input type="text" id="title" name="title"><br><br>');
+  $("#form").append('<label for="rating">Rating:</label>');
+  $("#form").append('<input type="text" id="rating" name="rating"><br><br>');
+  $("#container").append('<button type="submit" form="form" value="Submit" id="addRating">Add Rating</button>');
+  
+  // When the form is submitted, capture the values for each of the inputs and append them to the DOM along with a button to remove each title and rating from the DOM.
+
+  $("#addRating").on( "click", function(e) {
+    e.preventDefault();
+   
+    if($("#title").val().length > 1 && ($("#rating").val() >= 0 && $("#rating").val() <= 10)){
+      
+      $("#movies").append(`<div><h1 class="titleItem">Title: ${$("#title").val()}</h1><h1 class="ratingItem">Rating: ${$("#rating").val()}</h1><button id="delete">Delete</button></div>`);
+
+      $("#delete").on( "click", function(e) {
+        e.preventDefault();
+        e.target.parentElement.remove();
+      });
+
+    } else {
+      //Ensure that a title has at least 2 characters in it.
+      if (!($("#title").val().length > 1)) {
+        alert("Enter at least 2 characters for the movie title");
+      }
+      //Ensure that the rating of a movie can only be between 0 and 10.
+      if(!($("#rating").val() >= 0 && $("#rating").val() <= 10)) {
+        alert ("Enter a rating between 0 and 10");
+      }
+    }
+
+  });
+
+  // Allow users to sort alphabetically by the title of the movie or by the rating of the movie from lowest to highest and vice versa.
+
+  $("#sort").append('<select id="select-sort"></select>');
+  $("#select-sort").append('<option value="Sort" selected disabled hidden>Sort</option>');
+  $("#select-sort").append('<option value="titleAsc">Titles A-Z</option>');
+  $("#select-sort").append('<option value="titleDesc">Titles Z-A</option>');
+  $("#select-sort").append('<option value="reviewAsc">Reviews 0-10</option>');
+  $("#select-sort").append('<option value="reviewDesc">Reviews 10-0</option>');
+
+  $('#select-sort').change(function() {
+    let mylist = $('ul');
+    let listitems = mylist.children('div');
+    let titlesText = listitems.children('.titleItem').text();
+    if ($(this).val() == 'titleAsc') {
+      const sorted = listitems.detach().sort(function(a, b) { 
+        const at = $(a).children('.titleItem').text(); 
+        const bt = $(b).children('.titleItem').text(); 
+        return (at > bt) ? 1 : ((at < bt) ? -1 : 0); 
+      }); 
+      $("#movies").append(sorted);
+    } else if ($(this).val() == 'titleDesc'){
+      const sorted = listitems.detach().sort(function(a, b) {
+        const at = $(a).children('.titleItem').text(); 
+        const bt = $(b).children('.titleItem').text(); 
+        return (at < bt) ? 1 : ((at > bt) ? -1 : 0); 
+      }); 
+      $("#movies").append(sorted);
+    } else if ($(this).val() == 'reviewAsc'){
+      const sorted = listitems.detach().sort(function(a, b) { 
+        const at = $(a).children('.ratingItem').text(); 
+        const bt = $(b).children('.ratingItem').text(); 
+        return (at > bt) ? 1 : ((at < bt) ? -1 : 0); 
+      }); 
+      $("#movies").append(sorted);
+    } else if ($(this).val() == 'reviewDesc'){
+      const sorted = listitems.detach().sort(function(a, b) { 
+        const at = $(a).children('.ratingItem').text(); 
+        const bt = $(b).children('.ratingItem').text(); 
+        return (at < bt) ? 1 : ((at > bt) ? -1 : 0); 
+      }); 
+      $("#movies").append(sorted);
+    }
+    $('#select-sort').val("Sort");
+  });
+
+</script>
+</body>
+
+</html>
